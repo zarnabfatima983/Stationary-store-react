@@ -47,16 +47,25 @@ const Services = () => {
   }, [searchParams]);
 
   const addToCart = (name: string, price: number) => {
-    const cart: { name: string; price: number }[] = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cart: { name: string; price: number }[] = JSON.parse(
+      localStorage.getItem('cart') || '[]'
+    );
     cart.push({ name, price });
     localStorage.setItem('cart', JSON.stringify(cart));
     alert(`${name} added to cart!`);
   };
 
-  const buyNow = (name: string) => alert(`Proceeding to buy: ${name}`);
+  const buyNow = (name: string) => {
+    alert(`Proceeding to buy: ${name}`);
+  };
 
   const resetFilters = () => {
-    setSearchName(''); setFilterCategory(''); setMinPrice(''); setMaxPrice(''); setSortBy(''); setActiveTab('All');
+    setSearchName('');
+    setFilterCategory('');
+    setMinPrice('');
+    setMaxPrice('');
+    setSortBy('');
+    setActiveTab('All');
   };
 
   const quickFilter = (cat: string) => {
@@ -77,42 +86,55 @@ const Services = () => {
   else if (sortBy === 'name-asc') filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
   else if (sortBy === 'name-desc') filtered = [...filtered].sort((a, b) => b.name.localeCompare(a.name));
 
-  const inputCls = 'px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-gray-50 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:border-primary';
-
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
+    <>
       <Header title="🛒 All Products" subtitle="Explore our complete stationery collection" />
 
-      {/* Search & Filter */}
-      <section className="max-w-5xl mx-auto mt-8 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md">
-        <h2 className="text-xl font-bold text-primary dark:text-secondary mb-5">🔍 Search &amp; Filter Products</h2>
+      <section className="search-section">
+        <h2>🔍 Search &amp; Filter Products</h2>
 
-        <div className="flex flex-wrap gap-4 mb-5">
-          <div className="flex flex-col gap-1 flex-1 min-w-40">
-            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Search by Name</label>
-            <input type="text" placeholder="e.g. Gel Pen, Notebook..." value={searchName}
-              onChange={(e) => setSearchName(e.target.value)} className={inputCls} />
+        <div className="search-grid">
+          <div className="search-group">
+            <label>Search by Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Gel Pen, Notebook..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+            />
           </div>
-          <div className="flex flex-col gap-1 flex-1 min-w-40">
-            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Filter by Category</label>
-            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className={inputCls}>
+
+          <div className="search-group">
+            <label>Filter by Category</label>
+            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
               <option value="">All Categories</option>
               {categories.slice(1).map((c) => <option key={c}>{c}</option>)}
             </select>
           </div>
-          <div className="flex flex-col gap-1 flex-1 min-w-40">
-            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Min Price (Rs.)</label>
-            <input type="number" placeholder="e.g. 100" value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)} className={inputCls} />
+
+          <div className="search-group">
+            <label>Min Price (Rs.)</label>
+            <input
+              type="number"
+              placeholder="e.g. 100"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+            />
           </div>
-          <div className="flex flex-col gap-1 flex-1 min-w-40">
-            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Max Price (Rs.)</label>
-            <input type="number" placeholder="e.g. 1000" value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)} className={inputCls} />
+
+          <div className="search-group">
+            <label>Max Price (Rs.)</label>
+            <input
+              type="number"
+              placeholder="e.g. 1000"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+            />
           </div>
-          <div className="flex flex-col gap-1 flex-1 min-w-40">
-            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">Sort By</label>
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={inputCls}>
+
+          <div className="search-group">
+            <label>Sort By</label>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               <option value="">Default</option>
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
@@ -120,66 +142,63 @@ const Services = () => {
               <option value="name-desc">Name: Z to A</option>
             </select>
           </div>
-          <div className="flex flex-col justify-end flex-1 min-w-40">
-            <button onClick={resetFilters}
-              className="mt-5 px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:scale-[1.03] transition-transform cursor-pointer text-sm">
-              ✖ Reset Filters
-            </button>
+
+          <div className="search-group search-reset">
+            <button onClick={resetFilters}>✖ Reset Filters</button>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="cat-tabs">
           {categories.map((cat) => (
-            <button key={cat} onClick={() => quickFilter(cat)}
-              className={`px-4 py-1.5 border-2 border-primary rounded-full text-sm font-bold cursor-pointer transition-colors
-                ${activeTab === cat
-                  ? 'bg-primary text-white'
-                  : 'bg-transparent text-primary dark:text-secondary dark:border-secondary hover:bg-primary hover:text-white dark:hover:bg-secondary'}`}>
+            <button
+              key={cat}
+              className={`cat-tab${activeTab === cat ? ' active' : ''}`}
+              onClick={() => quickFilter(cat)}
+            >
               {cat}
             </button>
           ))}
         </div>
 
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          {filtered.length === 0 ? 'No products found' : `Showing ${filtered.length} product(s)`}
+        <p className="result-count">
+          {filtered.length === 0
+            ? 'No products found'
+            : `Showing ${filtered.length} product(s)`}
         </p>
       </section>
 
-      {/* Products Grid */}
-      <section className="flex flex-wrap justify-center gap-5 py-10 px-5" id="productGrid">
+      <section className="products" id="productGrid">
         {filtered.length === 0 ? (
-          <p className="text-center py-10 text-lg text-gray-500 dark:text-gray-400">No products found matching your search.</p>
+          <p className="no-results-text">
+            No products found matching your search.
+          </p>
         ) : (
           filtered.map((product) => (
-            <div key={product.name}
-              className={`w-64 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg text-center transition-transform hover:-translate-y-1 lg:w-[30%]
-                ${product.isBundle ? 'border-2 border-yellow-400' : ''}`}>
-              <img src={product.image} alt={product.name} className="w-full h-40 object-contain" />
-              <span className={`inline-block px-3 py-0.5 rounded-full text-xs text-white mb-1.5
-                ${product.isBundle ? 'bg-gradient-to-r from-yellow-400 to-red-500' : 'bg-secondary'}`}>
+            <div
+              className={`card${product.isBundle ? ' bundle-card' : ''}`}
+              key={product.name}
+            >
+              <img src={product.image} alt={product.name} />
+              <span className={`cat-badge${product.isBundle ? ' bundle-badge' : ''}`}>
                 {product.isBundle ? '🎁 Bundle' : product.category}
               </span>
-              <h3 className="font-bold text-base text-gray-900 dark:text-gray-100">{product.name}</h3>
-              <p className="text-sm my-1">
-                <span className="text-gray-800 dark:text-gray-200 font-semibold">Rs.{product.price}</span>
+              <h3>{product.name}</h3>
+              <p className="price">
+                Rs.{product.price}
                 {product.oldPrice && (
-                  <span className="line-through text-gray-400 text-xs ml-1.5">Rs.{product.oldPrice}</span>
+                  <span className="old-price">Rs.{product.oldPrice}</span>
                 )}
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{product.desc}</p>
-              <button onClick={() => addToCart(product.name, product.price)}
-                className="w-full mt-1 py-2.5 border-none rounded-xl cursor-pointer font-bold text-white bg-gradient-to-br from-primary to-secondary shadow-md hover:scale-[1.03] transition-transform text-sm">
+              <p className="desc">{product.desc}</p>
+              <button onClick={() => addToCart(product.name, product.price)}>
                 🛒 Add To Cart
               </button>
-              <button onClick={() => buyNow(product.name)}
-                className="w-full mt-2 py-2.5 border-none rounded-xl cursor-pointer font-bold text-white bg-gradient-to-br from-primary to-secondary shadow-md hover:scale-[1.03] transition-transform text-sm">
-                ⚡ Buy Now
-              </button>
+              <button onClick={() => buyNow(product.name)}>⚡ Buy Now</button>
             </div>
           ))
         )}
       </section>
-    </div>
+    </>
   );
 };
 
